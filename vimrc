@@ -21,15 +21,18 @@ set list listchars=tab:▸\ ,trail:.
 set hlsearch
 set colorcolumn=80
 set noswapfile
-set clipboard=unnamed
+set clipboard^=unnamed
 set modelines=0
 set nomodeline
 
-" autocmd InsertEnter * highlight CursorColumn ctermfg=White ctermbg=Yellow cterm=bold guifg=white guibg=yellow gui=bold
-" autocmd InsertLeave * highlight CursorColumn ctermfg=Black ctermbg=Yellow cterm=bold guifg=Black guibg=yellow gui=NONE
 
-" autocmd InsertEnter * highlight CursorLine guibg=#000050 guifg=fg
-" autocmd InsertLeave * highlight CursorLine guibg=#004000 guifg=fg
+"autocmd InsertEnter * highlight CursorColumn ctermfg=White ctermbg=Yellow cterm=bold guifg=white guibg=yellow gui=bold
+"autocmd InsertLeave * highlight CursorColumn ctermfg=Black ctermbg=Yellow cterm=bold guifg=Black guibg=yellow gui=NONE
+
+"autocmd InsertEnter * highlight CursorLine guibg=#000050 guifg=fg
+"autocmd InsertLeave * highlight CursorLine guibg=#004000 guifg=fg
+
+autocmd FileType make setlocal noexpandtab
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
@@ -70,39 +73,30 @@ ca w!! w !sudo tee "%"
 highlight BadWhitespace ctermbg=red guibg=darkred
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-
-" Add all plugins here
-" SimpylFold
-Plugin 'tmhedberg/SimpylFold'
-" YouCompleteMe
-" Plugin 'Valloric/YouCompleteMe'
-" Vim-Airline
-Plugin 'bling/vim-airline'
-" Python and other languages code checker
-Plugin 'scrooloose/syntastic'
-" Paint css color with the real color
-Plugin 'lilydjwg/colorizer'
-" NerdTree
-Plugin 'scrooloose/nerdtree' 
-" TagBar 
- Plugin 'majutsushi/tagbar' 
- " Vim-One
-Plugin 'rakr/vim-one'
-" Vimwiki
-Plugin 'vimwiki/vimwiki'
-" vim-fugitive
-Plugin 'tpope/vim-fugitive'
-" vim-obsession
-Plugin 'tpope/vim-obsession'
-" NerdCommenter
-Plugin 'scrooloose/nerdcommenter'
-" tmux-navigator
-Bundle 'christoomey/vim-tmux-navigator'
-"end plugin list
-call vundle#end()
+call plug#begin('~/.vim/plugged')
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'hashivim/vim-terraform'
+Plug 'vim-syntastic/syntastic'
+Plug 'juliosueiras/vim-terraform-completion'
+Plug 'fatih/vim-go'
+Plug 'tmhedberg/SimpylFold'
+Plug 'bling/vim-airline'
+Plug 'vimwiki/vimwiki'
+Plug 'lilydjwg/colorizer'
+Plug 'scrooloose/nerdtree' 
+Plug 'majutsushi/tagbar' 
+Plug 'rakr/vim-one'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'Townk/vim-autoclose'
+function! Installjshint(info)
+  if a:info.status == 'installed' || a:info.force
+    !npm install -g jshint
+  endif
+endfunction
+Plug 'scrooloose/syntastic', { 'do': function('Installjshint') }
+call plug#end()
 
 filetype plugin indent on
 
@@ -138,6 +132,12 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
 " Lets Navigate Windows with Standard Movements
 nmap <C-J> <C-W><C-J>
 nmap <C-K> <C-W><C-K>
@@ -159,3 +159,6 @@ let g:one_allow_italics = 1
 if has('nvim')
   let $GIT_EDITOR = 'nvr -cc split --remote-wait'
 endif
+
+source /Users/jberry/.vimrc_coc.nvim
+source /Users/jberry/.vimrc_vim-terraform
